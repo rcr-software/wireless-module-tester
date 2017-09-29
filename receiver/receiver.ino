@@ -10,24 +10,28 @@ void setup() {
   HC12.begin(1200);
 }
 
-int start = 0;
-byte currentByte = MAX;
-byte lastByte = MAX;
-
 void loop() {
 
-  while (HC12.available() > 0) {
-    lastByte = currentByte;
-    currentByte = HC12.read();
-    //Serial.print(currentByte);
-    //Serial.print(", ");
-
-    if (currentByte < lastByte){
-      //Serial.println();
-      //Serial.print("Bytes: ");Serial.print(currentByte);Serial.print(" ");Serial.println(lastByte);
-      //Serial.print("time: ");
-      Serial.println(millis()-start);
-      start = millis();
+  //start when any serial is available 
+  if (HC12.available() > 0){
+    byte data_in[MAX];
+    int i = 0;
+    int last_read_time = millis();
+    //loop until it takes too long to get data
+    while (millis() - last_read_time < 700) {
+      //loop while there is data in the serial buffer
+      while (HC12.available() > 0){
+        //read data into data_in array
+        data_in[i++] = HC12.read();
+      }
+      //update timeout
+      last_read_time = millis();
     }
+
+    //send all that data back
+    for (int j = 0; j < MAX; j++){
+      HC12.write(data_in[j]);
+    }
+    
   }
 }

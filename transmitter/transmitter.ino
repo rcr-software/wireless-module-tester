@@ -12,14 +12,27 @@ void setup() {
 
 byte count = 0;
 void loop() {
-  
-  HC12.write(count);
-  if (char(count) == MAX){
-    count = 0;
-    HC12.write(count);
-    delay(1000);
-
+  //send bytes from 0 to MAX
+  while (count < MAX){
+      HC12.write(count);
+      count++;
   }
+
+  //wait up to a second for reciever to reply
+  int time_start = millis();
+  while (time_start < 1000){
+    if (HC12.available() > 0){
+      break;
+    }
+  }
+
+  //if we get data in before timeout, print it to Serial
+  while (HC12.available() > 0){
+    Serial.write(HC12.read());
+  }
+
+  //wait a second or two before doing it again
+  delay(1700);
+
   
-  count++;
 }
