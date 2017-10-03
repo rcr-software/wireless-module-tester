@@ -4,14 +4,14 @@ const byte HC12RxdPin = 4;                  // Recieve Pin on HC12
 const byte HC12TxdPin = 5;                  // Transmit Pin on HC12
 const byte MAX = 10;
 
-const int SUCCESS_PIN = LED_BUILTIN;
+const int SUCCESS_PIN = 2;
 
 SoftwareSerial HC12(HC12TxdPin,HC12RxdPin); // Create Software Serial Port
 
 void setup() {
   Serial.begin(1200);
   HC12.begin(1200);
-  pinMode(2 , OUTPUT);
+  pinMode(SUCCESS_PIN, OUTPUT);
 
 }
 

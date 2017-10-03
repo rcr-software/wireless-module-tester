@@ -16,30 +16,31 @@ void setup() {
 }
 
 void loop() {
-  int success = 0;
+  int success = 1;
   //send a lowercase a to the other one
   //Serial.println("Sending byte out");
   HC12.write('a');
+  Serial.println("Transmitted");
 
 
   unsigned long time_start = millis();
-  while (HC12.available() <= 0){
-    if (millis() - time_start > 2000){
+  while (1){
+    if (millis() - time_start > 5000){
       digitalWrite(FAILURE_PIN, HIGH);
       Serial.println("timeout");
+      success = 0;
       break; 
+    }
+
+    if (HC12.read() == 'b'){
+      digitalWrite(SUCCESS_PIN, HIGH);
+      Serial.println("Success");
+      break;
     }
   }
 
-  while (HC12.available() > 0){
-    if (HC12.read() == 'b'){
-      success = 1;
-      digitalWrite(SUCCESS_PIN, HIGH);
-      Serial.println("***Recived reply***");
-    } else{
-      Serial.println("recieved garbage...");
-    }
-  }
+
+
   delay(200);
   digitalWrite(SUCCESS_PIN, LOW);
   digitalWrite(FAILURE_PIN, LOW);
